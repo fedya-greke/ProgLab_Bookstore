@@ -1,0 +1,19 @@
+{
+  "books": [
+    {
+      "name": "Название",
+      "author": "Автор",
+      "price": 0,
+      "genre": "Жанр",
+      "year": "Год выпуска",
+      "rating": 0.1,
+    }
+  ],
+  "customers": [
+    {
+      "nickname": "Имя пользователя",
+      "email": "email@address.com",
+      "balance": 0
+    }
+  ]
+}

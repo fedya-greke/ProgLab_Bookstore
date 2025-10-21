@@ -1,0 +1,19 @@
+<bookstore>
+  <books>
+    <book>
+      <title>Название</title>
+      <author>Автор</author>
+      <price>0</price>
+      <genre>Жанр</genre>
+      <year>Год выпуска</year>
+      <rating>0.1</rating>
+    </book>
+  </books>
+  <customers>
+    <customer>
+      <nickname>Имя</nickname>
+      <email>email@address.com</email>
+      <balance>0</balance>
+    </customer>
+  </customers>
+</bookstore>
