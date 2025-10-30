@@ -1,19 +1,2 @@
-<bookstore>
-  <books>
-    <book>
-      <title>Название</title>
-      <author>Автор</author>
-      <price>0</price>
-      <genre>Жанр</genre>
-      <year>Год выпуска</year>
-      <rating>0.1</rating>
-    </book>
-  </books>
-  <customers>
-    <customer>
-      <nickname>Имя</nickname>
-      <email>email@address.com</email>
-      <balance>0</balance>
-    </customer>
-  </customers>
-</bookstore>
+<?xml version='1.0' encoding='utf-8'?>
+<bookstore><next_ids><book>4</book><author>4</author><customer>3</customer><order>3</order></next_ids><authors><author><id>1</id><name>Лев Толстой</name><country>Россия</country></author><author><id>2</id><name>Фёдор Достоевский</name><country>Россия</country></author><author><id>3</id><name>Антон Чехов</name><country>Россия</country></author></authors><books><book><id>1</id><title>Война и мир</title><author_id>1</author_id><price>500.0</price><genre>Роман</genre><rating>0.0</rating></book><book><id>2</id><title>Преступление и наказание</title><author_id>2</author_id><price>450.0</price><genre>Роман</genre><rating>0.0</rating></book><book><id>3</id><title>Вишневый сад</title><author_id>3</author_id><price>300.0</price><genre>Пьеса</genre><rating>0.0</rating></book></books><customers><customer><id>1</id><name>Иван Иванов</name><email>ivan@mail.ru</email><balance>2000.0</balance><purchased_books /></customer><customer><id>2</id><name>Петр Петров</name><email>petr@mail.ru</email><balance>1500.0</balance><purchased_books /></customer></customers><orders><order><id>1</id><customer_id>1</customer_id><order_date>2025/10/30 17:24</order_date><status>Created</status><total_price>950.0</total_price><books><book_id>1</book_id><book_id>2</book_id></books></order><order><id>2</id><customer_id>2</customer_id><order_date>2025/10/30 17:24</order_date><status>Created</status><total_price>300.0</total_price><books><book_id>3</book_id></books></order></orders></bookstore>

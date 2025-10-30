@@ -1,19 +1,90 @@
 {
+  "next_ids": {
+    "book": 4,
+    "author": 4,
+    "customer": 3,
+    "order": 3
+  },
+  "authors": [
+    {
+      "author_id": 1,
+      "name": "Лев Толстой",
+      "country": "Россия"
+    },
+    {
+      "author_id": 2,
+      "name": "Фёдор Достоевский",
+      "country": "Россия"
+    },
+    {
+      "author_id": 3,
+      "name": "Антон Чехов",
+      "country": "Россия"
+    }
+  ],
   "books": [
     {
-      "name": "Название",
-      "author": "Автор",
-      "price": 0,
-      "genre": "Жанр",
-      "year": "Год выпуска",
-      "rating": 0.1,
+      "book_id": 1,
+      "title": "Война и мир",
+      "author_id": 1,
+      "price": 500.0,
+      "genre": "Роман",
+      "rating": 0.0
+    },
+    {
+      "book_id": 2,
+      "title": "Преступление и наказание",
+      "author_id": 2,
+      "price": 450.0,
+      "genre": "Роман",
+      "rating": 0.0
+    },
+    {
+      "book_id": 3,
+      "title": "Вишневый сад",
+      "author_id": 3,
+      "price": 300.0,
+      "genre": "Пьеса",
+      "rating": 0.0
     }
   ],
   "customers": [
     {
-      "nickname": "Имя пользователя",
-      "email": "email@address.com",
-      "balance": 0
+      "customer_id": 1,
+      "name": "Иван Иванов",
+      "email": "ivan@mail.ru",
+      "balance": 2000.0,
+      "purchased_book_ids": []
+    },
+    {
+      "customer_id": 2,
+      "name": "Петр Петров",
+      "email": "petr@mail.ru",
+      "balance": 1500.0,
+      "purchased_book_ids": []
+    }
+  ],
+  "orders": [
+    {
+      "order_id": 1,
+      "customer_id": 1,
+      "book_ids": [
+        1,
+        2
+      ],
+      "order_date": "2025/10/30 17:24",
+      "status": "Created",
+      "total_price": 950.0
+    },
+    {
+      "order_id": 2,
+      "customer_id": 2,
+      "book_ids": [
+        3
+      ],
+      "order_date": "2025/10/30 17:24",
+      "status": "Created",
+      "total_price": 300.0
     }
   ]
 }
