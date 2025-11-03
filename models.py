@@ -8,43 +8,43 @@ Order - заказ"""
 
 class Author:
     """Автор книги и его данные"""
-    def __init__(self, author_id: int, author_name: str, country: str = "Неизвестно", birthday: str = "Неизвестно") -> None:
+    def __init__(self, author_id: int, name: str, country: str = "Неизвестно", birthday: str = "Неизвестно") -> None:
         self.author_id = author_id
-        self.author_name = author_name
+        self.name = name
         self.country = country
         self.birthday = birthday
     def get_info(self) -> str:
-        return f"Автор: {self.author_name}, Страна: {self.country}, Дата рождения: {self.birthday}"
+        return f"Автор: {self.name}, Страна: {self.country}, Дата рождения: {self.birthday}"
     def __str__(self) -> str:
         """Метод класса, вызывается когда преобразуем объект в строку"""
-        return f"{self.author_name}"
+        return f"{self.name}"
 
 class Book:
     """Цифровая книга"""
-    def __init__(self, book_id: int,  book_title: str, author_name: Author, book_price: float,
+    def __init__(self, book_id: int, title: str, author: Author, price: float,
                  genre: str = "Не указан", rating: float = 0.0) -> None:
         self.book_id = book_id
-        self.book_title = book_title
-        self.author_name = author_name
-        self.book_price = book_price
+        self.title = title
+        self.author = author
+        self.price = price
         self.genre = genre
         self.rating = rating
         # Проверка цены
-        if self.book_price <= 0:
-            raise InvalidPrice(book_price)
+        if self.price <= 0:
+            raise InvalidPrice(price)
     def get_info(self) -> str:
         """Подробная информация о книге"""
-        return (f"Книга: {self.book_title}\n"
-                f"Автор: {self.author_name}\n"
-                f"Цена: {self.book_price}\n"
+        return (f"Книга: {self.title}\n"
+                f"Автор: {self.author}\n"
+                f"Цена: {self.price}\n"
                 f"Жанр: {self.genre}\n"
                 f"Рейтинг: {self.rating}")
     def apply_discount(self, discount_persent: float) -> None:
         """Применяет скидку к покупке"""
         if 0 < discount_persent <= 100:
-            self.book_price = self.book_price * ( 1 - discount_persent / 100)
+            self.price = self.price * (1 - discount_persent / 100)
     def __str__(self) -> str:
-        return f"{self.book_title}"
+        return f"{self.title}"
 
 class Customer:
     """Класс покупатель"""
@@ -53,7 +53,7 @@ class Customer:
         self.name = name
         self.email = email
         self.balance = balance
-        self.purchased_book: list[Book] = [] #Купленные книги
+        self.purchased_books: list[Book] = [] #Купленные книги
     def add_money(self, amount: float) -> None:
         """Пополнение боланса"""
         if amount <= 0:
@@ -63,9 +63,9 @@ class Customer:
         return self.balance >= amount
     def purchase_book(self, book: Book) -> bool:
         """Покупка книги"""
-        if self.can_afford(book.book_price):
-            self.balance -= book.book_price
-            self.purchased_book.append(book)
+        if self.can_afford(book.price):
+            self.balance -= book.price
+            self.purchased_books.append(book)
             return True
         return False
     def get_info(self) -> str:
@@ -87,11 +87,10 @@ class Order:
         return datetime.now().strftime("%Y/%m/%d %H:%M")
     def calculate_total(self) -> float:
         """Общая стоимость"""
-        return sum(book.book_price for book in self.books)
-
+        return sum(book.price for book in self.books)
     def process_order(self) -> bool:
         """Обрабатывает заказ - списывает деньги и выдает книги"""
-        if self.status != "created":
+        if self.status.lower() != "created":
             return False
 
         total = self.calculate_total()
@@ -102,11 +101,13 @@ class Order:
 
         # Списываем деньги
         self.customer.balance -= total
+        print(f"DEBUG: Деньги списаны. Новый баланс: {self.customer.balance}")
 
         # Добавляем книги в список покупок
-        self.customer.purchased_book.extend(self.books)
+        self.customer.purchased_books.extend(self.books)
 
         self.status = "completed"
+        print(f"DEBUG: Статус заказа изменен на: {self.status}")
         return True
 
     def cancel_order(self) -> bool:
@@ -116,14 +117,14 @@ class Order:
             self.customer.balance += self.total_price
             # Убираем книги из списка покупок
             for book in self.books:
-                if book in self.customer.purchased_book:
-                    self.customer.purchased_book.remove(book)
+                if book in self.customer.purchased_books:
+                    self.customer.purchased_books.remove(book)
 
         self.status = "cancelled"
         return True
     def get_order_info(self) -> str:
         """Возвращает информацию о заказе"""
-        books_info = "\n".join(f"  - {book.book_title} ({book.book_price} руб.)" for book in self.books)
+        books_info = "\n".join(f"  - {book.title} ({book.price} руб.)" for book in self.books)
         return (f"Заказ #{self.order_id}\n"
                 f"Покупатель: {self.customer.name}\n"
                 f"Дата: {self.order_date}\n"
@@ -218,49 +219,3 @@ class BookStore:
     def get_customer_orders(self, customer_id: int) -> list[Order]:
         """Возвращает все заказы покупателя"""
         return [order for order in self.orders if order.customer.customer_id == customer_id]
-
-"""Тестировка"""
-if __name__ == "__main__":
-
-    """Класс Author"""
-
-    print("Тестируем класс Author")
-
-    # Создаем автора
-    author1 = Author(1, "Лев Толстой", "Россия", "1828-09-09")
-
-    print("1. Атрибуты объекта:")
-    print("   Имя автора:", author1.author_name)
-    print("   Страна:", author1.country)
-    print("   Дата рождения:", author1.birthday)
-
-    print("\n2. Вызов методов:")
-    print("   author1.get_info():", author1.get_info())
-
-    print("\n4. Автор с параметрами по умолчанию:")
-    author2 = Author(1, "Джон Смит")  # только имя
-    print("Автор2:", author2)
-
-    """Класс Book"""
-
-    print("\nТестируем класс Book")
-
-    # Создаем автора и книгу
-    author1 = Author(1, "Лев Толстой", "Россия")
-    book1 = Book(1, "Война и мир", author1, 500.0, "Роман", 4.8)
-
-    print("Книга:", book1)
-    print("\nДетали:")
-    print(book1.get_info())
-
-    # Тестируем скидку
-    print("\nПосле скидки 20%:")
-    book1.apply_discount(20)
-    print("Новая цена:", book1.book_price)
-
-    # Тестируем исключение
-    print("\nТестируем исключение")
-    try:
-        book_err = Book(1, "Ошибка", author1, -100.0)
-    except Exception as e:
-        print("Поймали ошибку:", e)

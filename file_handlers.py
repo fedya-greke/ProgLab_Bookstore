@@ -20,18 +20,18 @@ class FileHandler:
             "authors": [
                 {
                     "author_id": author.author_id,
-                    "name": author.author_name,
+                    "name": author.name,
                     "country": author.country
                 }
                 for author in bookstore.authors # проходим по всем элементам
             ],
-            # Спиок словарей книг
+            # Список словарей книг
             "books": [
                 {
                     "book_id": book.book_id,
-                    "title": book.book_title,
-                    "author_id": book.author_name.author_id,  # сохраняем ID автора
-                    "price": book.book_price,
+                    "title": book.title,
+                    "author_id": book.author.author_id,  # сохраняем ID автора
+                    "price": book.price,
                     "genre": book.genre,
                     "rating": book.rating
                 }
@@ -45,7 +45,7 @@ class FileHandler:
                     "email": customer.email,
                     "balance": customer.balance,
                     # Запоминаем айди купленныйх книг
-                    "purchased_book_ids": [book.book_id for book in customer.purchased_book]
+                    "purchased_book_ids": [book.book_id for book in customer.purchased_books]
                 }
                 for customer in bookstore.customers
             ],
@@ -104,7 +104,7 @@ class FileHandler:
                 # Восстанавливаем купленные книги
                 for book_id in customer_data["purchased_book_ids"]:
                     if book_id in books_dict:
-                        customer.purchased_book.append(books_dict[book_id])
+                        customer.purchased_books.append(books_dict[book_id])
 
             # Создаем заказы
             for order_data in data["orders"]:
@@ -121,7 +121,7 @@ class FileHandler:
             return bookstore
 
     @staticmethod
-    def save_to_xml(bookstore: BookStore, filename: str) -> None:
+    def save_to_xml_file(bookstore: BookStore, filename: str) -> None:
         """Сохраняет данные магазина в XML файл"""
         root = ET.Element("bookstore") # корневой элемент
 
@@ -137,7 +137,7 @@ class FileHandler:
         for author in bookstore.authors:
             author_elem = ET.SubElement(authors_elem, "author")
             ET.SubElement(author_elem, "id").text = str(author.author_id)
-            ET.SubElement(author_elem, "name").text = author.author_name
+            ET.SubElement(author_elem, "name").text = author.name
             ET.SubElement(author_elem, "country").text = author.country
 
         # Сохраняем книги
@@ -145,9 +145,9 @@ class FileHandler:
         for book in bookstore.books:
             book_elem = ET.SubElement(books_elem, "book")
             ET.SubElement(book_elem, "id").text = str(book.book_id)
-            ET.SubElement(book_elem, "title").text = book.book_title
-            ET.SubElement(book_elem, "author_id").text = str(book.author_name.author_id)
-            ET.SubElement(book_elem, "price").text = str(book.book_price)
+            ET.SubElement(book_elem, "title").text = book.title
+            ET.SubElement(book_elem, "author_id").text = str(book.author.author_id)
+            ET.SubElement(book_elem, "price").text = str(book.price)
             ET.SubElement(book_elem, "genre").text = book.genre
             ET.SubElement(book_elem, "rating").text = str(book.rating)
 
@@ -161,7 +161,7 @@ class FileHandler:
             ET.SubElement(customer_elem, "balance").text = str(customer.balance)
             # Сохраняем ID купленных книг
             purchased_books = ET.SubElement(customer_elem, "purchased_books")
-            for book in customer.purchased_book:
+            for book in customer.purchased_books:
                 ET.SubElement(purchased_books, "book_id").text = str(book.book_id)
 
         # Заказы
@@ -244,7 +244,7 @@ class FileHandler:
             for book_id_elem in purchased_books_elem.findall("book_id"):
                 book_id = int(book_id_elem.text)
                 if book_id in books_dict:
-                    customer.purchased_book.append(books_dict[book_id])
+                    customer.purchased_books.append(books_dict[book_id])
 
         # 5. Восстанавливаем заказы
         orders_elem = root.find("orders")
@@ -273,9 +273,6 @@ class FileHandler:
             bookstore.orders.append(order)
 
         return bookstore
-
-
-# Добавьте в конец file_handlers.py
 
 if __name__ == "__main__":
     print("Тестируем работу с файлами")
@@ -319,7 +316,7 @@ if __name__ == "__main__":
     print("\n Покупатели:")
     for customer in store.customers:
         print(f"   - {customer}")
-        print(f"     Куплено книг: {len(customer.purchased_book)}")
+        print(f"     Куплено книг: {len(customer.purchased_books)}")
 
     print("\n Заказы:")
     for order in store.orders:
@@ -347,16 +344,16 @@ if __name__ == "__main__":
     print("\n Проверяем связи в JSON:")
     customer_loaded = store_from_json.customers[0]
     print(f"   Покупатель: {customer_loaded.name}")
-    print(f"   Куплено книг: {len(customer_loaded.purchased_book)}")
-    if customer_loaded.purchased_book:
-        print(f"   Первая книга: {customer_loaded.purchased_book[0].book_title}")
-        print(f"   Автор книги: {customer_loaded.purchased_book[0].author_name.author_name}")
+    print(f"   Куплено книг: {len(customer_loaded.purchased_books)}")
+    if customer_loaded.purchased_books:
+        print(f"   Первая книга: {customer_loaded.purchased_books[0].title}")
+        print(f"   Автор книги: {customer_loaded.purchased_books[0].author.name}")
 
     # ТЕСТ 2: Сохраняем и загружаем из XML
     print(" ТЕСТ 2: Работа с XML")
 
     # Сохраняем в XML
-    FileHandler.save_to_xml(store, "data/books.xml")
+    FileHandler.save_to_xml_file(store, "data/books.xml")
     print(" Данные сохранены в data/books.xml")
 
     # Загружаем обратно из XML
@@ -375,13 +372,13 @@ if __name__ == "__main__":
     customer_xml = store_from_xml.customers[0]
     print(f"   Покупатель: {customer_xml.name}")
     print(f"   Баланс: {customer_xml.balance} руб.")
-    print(f"   Куплено книг: {len(customer_xml.purchased_book)}")
+    print(f"   Куплено книг: {len(customer_xml.purchased_books)}")
 
-    if customer_xml.purchased_book:
+    if customer_xml.purchased_books:
         print(f"   Купленные книги:")
-        for book in customer_xml.purchased_book:
-            print(f"     - {book.book_title} ({book.book_price} руб.)")
-            print(f"       Автор: {book.author_name.author_name}")
+        for book in customer_xml.purchased_books:
+            print(f"     - {book.title} ({book.price} руб.)")
+            print(f"       Автор: {book.author.name}")
 
     # Проверяем заказы
     print("\n Заказы из XML:")
@@ -392,7 +389,7 @@ if __name__ == "__main__":
         print(f"     Сумма: {order.total_price} руб.")
         print(f"     Книг в заказе: {len(order.books)}")
         for book in order.books:
-            print(f"       - {book.book_title}")
+            print(f"       - {book.title}")
 
     # ТЕСТ 3: Сравниваем данные из JSON и XML
     print(" ТЕСТ 3: Сравнение JSON и XML")
@@ -412,10 +409,10 @@ if __name__ == "__main__":
         json_first_book = store_from_json.books[0]
         xml_first_book = store_from_xml.books[0]
 
-        print(f"\nПервая книга в JSON: '{json_first_book.book_title}' за {json_first_book.book_price} руб.")
-        print(f"Первая книга в XML: '{xml_first_book.book_title}' за {xml_first_book.book_price} руб.")
-        print(f"Названия совпадают: {'Да' if json_first_book.book_title == xml_first_book.book_title else 'Нет'}")
-        print(f"Цены совпадают: {'Да' if json_first_book.book_price == xml_first_book.book_price else 'Нет'}")
+        print(f"\nПервая книга в JSON: '{json_first_book.title}' за {json_first_book.price} руб.")
+        print(f"Первая книга в XML: '{xml_first_book.title}' за {xml_first_book.price} руб.")
+        print(f"Названия совпадают: {'Да' if json_first_book.title == xml_first_book.title else 'Нет'}")
+        print(f"Цены совпадают: {'Да' if json_first_book.price == xml_first_book.price else 'Нет'}")
 
     # Проверяем счетчики ID
     print(f"\nСчетчики ID после загрузки:")

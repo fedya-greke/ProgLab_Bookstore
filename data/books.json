@@ -1,9 +1,9 @@
 {
   "next_ids": {
-    "book": 4,
-    "author": 4,
-    "customer": 3,
-    "order": 3
+    "book": 6,
+    "author": 5,
+    "customer": 5,
+    "order": 8
   },
   "authors": [
     {
@@ -20,6 +20,11 @@
       "author_id": 3,
       "name": "Антон Чехов",
       "country": "Россия"
+    },
+    {
+      "author_id": 4,
+      "name": "Александр Пушкин",
+      "country": "Росиия"
     }
   ],
   "books": [
@@ -46,6 +51,14 @@
       "price": 300.0,
       "genre": "Пьеса",
       "rating": 0.0
+    },
+    {
+      "book_id": 5,
+      "title": "Евгений Онегин",
+      "author_id": 4,
+      "price": 1000.0,
+      "genre": "Роман",
+      "rating": 0.0
     }
   ],
   "customers": [
@@ -53,8 +66,11 @@
       "customer_id": 1,
       "name": "Иван Иванов",
       "email": "ivan@mail.ru",
-      "balance": 2000.0,
-      "purchased_book_ids": []
+      "balance": 1200.0,
+      "purchased_book_ids": [
+        3,
+        1
+      ]
     },
     {
       "customer_id": 2,
@@ -62,6 +78,24 @@
       "email": "petr@mail.ru",
       "balance": 1500.0,
       "purchased_book_ids": []
+    },
+    {
+      "customer_id": 3,
+      "name": "Федя",
+      "email": "fedos@mial.ru",
+      "balance": 1001.0,
+      "purchased_book_ids": []
+    },
+    {
+      "customer_id": 4,
+      "name": "Вася",
+      "email": "kulak2006",
+      "balance": 198750.0,
+      "purchased_book_ids": [
+        1,
+        2,
+        3
+      ]
     }
   ],
   "orders": [
@@ -73,7 +107,7 @@
         2
       ],
       "order_date": "2025/10/30 17:24",
-      "status": "Created",
+      "status": "cancelled",
       "total_price": 950.0
     },
     {
@@ -85,6 +119,58 @@
       "order_date": "2025/10/30 17:24",
       "status": "Created",
       "total_price": 300.0
+    },
+    {
+      "order_id": 3,
+      "customer_id": 2,
+      "book_ids": [
+        1
+      ],
+      "order_date": "2025/11/03 18:04",
+      "status": "Created",
+      "total_price": 500.0
+    },
+    {
+      "order_id": 4,
+      "customer_id": 3,
+      "book_ids": [
+        5
+      ],
+      "order_date": "2025/11/03 18:10",
+      "status": "cancelled",
+      "total_price": 1000.0
+    },
+    {
+      "order_id": 5,
+      "customer_id": 1,
+      "book_ids": [
+        3
+      ],
+      "order_date": "2025/11/03 18:28",
+      "status": "completed",
+      "total_price": 300.0
+    },
+    {
+      "order_id": 6,
+      "customer_id": 4,
+      "book_ids": [
+        1,
+        2,
+        3
+      ],
+      "order_date": "2025/11/03 18:29",
+      "status": "completed",
+      "total_price": 1250.0
+    },
+    {
+      "order_id": 7,
+      "customer_id": 1,
+      "book_ids": [
+        1
+      ],
+      "order_date": "2025/11/03 18:36",
+      "status": "completed",
+      "total_price": 500.0
     }
   ]
 }
